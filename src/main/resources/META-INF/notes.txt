@@ -1,0 +1,50 @@
+JPA:
+
+	Persistence Context:
+		- purpose:
+			- metadata about the connection and behavior
+
+		- contains information about:
+			- what is the db?
+			- what is the connection string?
+			- does it drop schema or create schema from scratch?
+			- kind of configuration of how jpa needs to behave.
+
+
+		<persistence-unit name="myApp" transaction-type="RESOURCE_LOCAL">
+
+		The resource_local is one of the transaction types available. Since we have just 1 DB in the example so we used this one. Other available option is JTA which helps in managing transaction across multiple DBs.
+
+
+		<provider></provider>
+
+		Specifies the implementer of JPA
+
+
+		hibernate.hbm2ddl.auto:
+			- create-drop: Always drops the existing table or objects & creates it again from scratch
+			- validate: It tries to validate if the existing tables in DB matches with the Java Objects present.
+
+			Diff b/w create & create-drop:
+				- create-drop drops everything in the DB after the Entity Manager is closed.
+				- create doesn't do anything of that sort.
+
+
+	Annotations:
+
+		- @Table(name = "NAME_OF_THE_TABLE", schema = "WHICH_SCHEMA_THIS_TABLE_BELONGS_TO")
+
+
+
+	Mappings:
+		- It's very important to understand the fetch type of Mappings.
+		- If data is huge, it will be a performance hit to eagerly fetching all the records especially in OneToMany mappings.
+
+		@OneToOne(fetch = FetchType.LAZY)
+
+        BY-DIRECTIONAL one-to-one:
+            @OneToOne(mappedBy = "<column-name>") is important for telling JPA which one is the owner relationship.
+            If we fail to specify this then JPA will perform un-necessary join statements.
+
+            One thing to note here is that, if we are specifying @OneToOne on both sides, then we have to set fields on both sides
+            as well. In the example, we need to do e1.setCard(c1) & c1.setEmployee(e1).
